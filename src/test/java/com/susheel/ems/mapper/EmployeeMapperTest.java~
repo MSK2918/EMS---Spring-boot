@@ -1,0 +1,126 @@
+package com.susheel.ems.mapper;
+
+import com.susheel.ems.DTO.EmployeeDto;
+import com.susheel.ems.DTO.EmployeeResponseDto;
+import com.susheel.ems.entity.Employee;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+@ExtendWith(MockitoExtension.class)
+class EmployeeMapperTest {
+
+    @InjectMocks
+    private EmployeeMapper employeeMapper;
+
+    private EmployeeDto employeeDto;
+    private Employee employee;
+    private final UUID employeeId = UUID.randomUUID();
+
+    @BeforeEach
+    void setUp() {
+        employeeDto = new EmployeeDto(
+                "John Doe",
+                "john.doe@example.com",
+                "123 Main St, City",
+                50000.0
+        );
+
+        employee = new Employee();
+        employee.setId(employeeId);
+        employee.setName(employeeDto.name());
+        employee.setEmail(employeeDto.email());
+        employee.setAddress(employeeDto.address());
+        employee.setSalary(employeeDto.salary());
+    }
+
+    @Test
+    void employeeDtoToEmployee_ValidDto_ReturnsEmployee() {
+        // Act
+        Employee result = employeeMapper.employeeDtoToEmployee(employeeDto);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(employeeDto.name(), result.getName());
+        assertEquals(employeeDto.email(), result.getEmail());
+        assertEquals(employeeDto.address(), result.getAddress());
+        assertEquals(employeeDto.salary(), result.getSalary());
+    }
+
+    @Test
+    void employeeDtoToEmployee_NullDto_ThrowsNullPointerException() {
+        // Act & Assert
+        assertThrows(NullPointerException.class, () -> {
+            employeeMapper.employeeDtoToEmployee(null);
+        });
+    }
+
+    @Test
+    void employeeToEmployeeResponseDto_ValidEmployee_ReturnsEmployeeResponseDto() {
+        // Arrange
+        EmployeeResponseDto expectedDto = new EmployeeResponseDto(
+                employeeId,
+                employee.getName(),
+                employee.getEmail(),
+                employee.getAddress(),
+                employee.getSalary()
+        );
+
+        // Act
+        EmployeeResponseDto result = employeeMapper.employeeToEmployeeResponseDto(employee);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(expectedDto, result);
+    }
+
+    @Test
+    void employeeToEmployeeResponseDto_NullEmployee_ThrowsNullPointerException() {
+        // Act & Assert
+        assertThrows(NullPointerException.class, () -> {
+            employeeMapper.employeeToEmployeeResponseDto(null);
+        });
+    }
+
+    @Test
+    void employeeListToEmployeeResponseDtoList_ValidList_ReturnsMappedList() {
+        // Arrange
+        List<Employee> employees = Arrays.asList(employee, employee);
+
+        // Act
+        List<EmployeeResponseDto> result = employeeMapper.employeeListToEmployeeResponseDtoList(employees);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        assertEquals(employee.getId(), result.get(0).id());
+        assertEquals(employee.getName(), result.get(0).name());
+    }
+
+    @Test
+    void employeeListToEmployeeResponseDtoList_EmptyList_ReturnsEmptyList() {
+        // Act
+        List<EmployeeResponseDto> result = employeeMapper.employeeListToEmployeeResponseDtoList(Collections.emptyList());
+
+        // Assert
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void employeeListToEmployeeResponseDtoList_NullList_ThrowsNullPointerException() {
+        // Act & Assert
+        assertThrows(NullPointerException.class, () -> {
+            employeeMapper.employeeListToEmployeeResponseDtoList(null);
+        });
+    }
+}

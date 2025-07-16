@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: Employee Management System
+    version: 1.0.0
+  profiles:
+    active: prod
+server:
+  port: 6000
+
+frontend:
+  url: ${FRONTEND_URL}
+

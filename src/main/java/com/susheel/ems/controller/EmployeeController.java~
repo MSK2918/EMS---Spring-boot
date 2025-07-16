@@ -1,0 +1,64 @@
+package com.susheel.ems.controller;
+
+import java.util.UUID;
+
+import com.susheel.ems.DTO.EmployeeDto;
+import com.susheel.ems.DTO.EmployeeResponseDto;
+import com.susheel.ems.service.EmployeeService;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/v1")
+public class EmployeeController {
+
+    private final EmployeeService employeeService;
+
+    public EmployeeController(EmployeeService employeeService) {
+        this.employeeService = employeeService;
+    }
+
+
+    // save employee
+    @PostMapping("/employee")
+    public ResponseEntity<EmployeeResponseDto> createEmployee(@RequestBody @Valid EmployeeDto employeeDto) {
+        EmployeeResponseDto response = employeeService.createEmployee(employeeDto);
+        return ResponseEntity.ok(response);
+    }
+
+
+    // get all employees
+    @GetMapping("/employee")
+    public ResponseEntity<?> getAllEmployees () {
+        var response = employeeService.getAllEmployees();
+        return ResponseEntity.ok().body(response);
+    }
+
+
+    // update employee
+    @PutMapping("/update/{id}")
+    public ResponseEntity<String> updateEmployeeById(@PathVariable UUID id, @RequestBody @Valid EmployeeDto employeeDto) {
+        String response = employeeService.updateEmployeeById(id, employeeDto);
+        return ResponseEntity.ok(response);
+    }
+
+
+    // delete employee
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> deleteEmployeeById(@PathVariable UUID id) {
+        String response = employeeService.deleteEmployeeById(id);
+        return ResponseEntity.ok(response);
+    }
+
+
+    // delete all employees
+    @DeleteMapping("/employee")
+    public ResponseEntity<String> deleteAllEmployees () {
+        String response = employeeService.deleteAllEmployees();
+        return ResponseEntity.ok(response);
+    }
+}
+
+
+
