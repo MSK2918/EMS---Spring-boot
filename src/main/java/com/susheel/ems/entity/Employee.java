@@ -19,7 +19,7 @@ import java.util.UUID;
 public class Employee {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     private String name;
 
